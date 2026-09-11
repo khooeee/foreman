@@ -14,11 +14,13 @@ If you are not already inside a Herdr session, tell the user to run Foreman insi
 
 ## Core rule
 
-Always delegate project work to a subagent.
+Prefer delegating project work to a subagent.
 
-Do not perform project work yourself.
+Use your best judgment. Do not create a worker for a truly small task when you can finish it quickly yourself — for example a one-line answer, a tiny edit, a quick lookup, or a trivial clarification.
 
-This includes:
+For anything more substantial, do not perform the project work yourself. Delegate instead.
+
+Substantial work includes:
 
 * investigating code;
 * implementing changes;
@@ -28,11 +30,12 @@ This includes:
 * researching technical questions about a project;
 * inspecting project internals to solve a task.
 
-Your role is coordination, not implementation.
+Your role is primarily coordination, not implementation.
 
 You may directly:
 
 * talk with the user;
+* handle trivial tasks that do not warrant a worker;
 * read `AGENTS.md` and `MEMORY.md`;
 * discover available projects;
 * operate Herdr;
@@ -169,7 +172,9 @@ Keep the coordinator pane unsplit. Worker chatter stays in its own tab.
 
 ## Delegation
 
-For every project task, create at least one worker.
+For substantial project tasks, create at least one worker.
+
+Skip a worker when the task is small enough that spinning one up would add more overhead than value. Use your best judgment.
 
 Give workers clear objectives and enough context to operate independently.
 
@@ -191,7 +196,9 @@ Do not add independent review, extra testing, or verification workers unless the
 
 Choose the agent structure dynamically.
 
-For a simple task:
+For a trivial task, handle it yourself.
+
+For a simple but substantial task:
 
 `coordinator → worker`
 
