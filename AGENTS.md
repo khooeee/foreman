@@ -133,6 +133,7 @@ Use its native agent and terminal primitives rather than building a second orche
 Typical primitives include:
 
 * `herdr workspace create`
+* `herdr tab create`
 * `herdr worktree create`
 * `herdr agent start`
 * `herdr agent prompt`
@@ -150,6 +151,21 @@ Do not create your own:
 * watcher daemon;
 * supervisor service;
 * lifecycle state machine.
+
+### No pane splits
+
+When creating a worker terminal or agent, do not split the current window.
+
+Do not use `herdr pane split`.
+
+Create each worker in a new tab (or workspace when appropriate), then start the agent in that tab's root pane:
+
+```bash
+herdr tab create --cwd "$PWD" --label <worker-label> --no-focus
+herdr agent start <name> --kind <kind> --pane <returned-root-pane-id>
+```
+
+Keep the coordinator pane unsplit. Worker chatter stays in its own tab.
 
 ## Delegation
 
