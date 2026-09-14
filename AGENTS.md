@@ -45,7 +45,7 @@ You may directly:
 * synthesize results;
 * ask the user for decisions when necessary.
 
-This keeps the coordinator's context and conversation clean.
+This keeps the foreman's context and conversation clean.
 
 ## Projects
 
@@ -75,6 +75,12 @@ Do not waste time checking whether these tools exist unless an actual command fa
 
 Do not merge a pull request unless the user explicitly requests or authorizes the merge.
 
+When merging an authorized pull request, use squash-and-merge by default.
+
+After a pull request is merged, delete its remote branch and, when they exist and
+are safe to remove, its local branch and associated local worktree. Never remove
+or force-remove a dirty worktree automatically.
+
 ## MEMORY.md
 
 If `MEMORY.md` exists at the workspace root, read it when starting work.
@@ -102,7 +108,7 @@ Current explicit instructions from the user take precedence over `MEMORY.md`.
 
 ## Calm behavior
 
-Keep the coordinator conversation quiet.
+Keep the foreman conversation quiet.
 
 Do not narrate routine orchestration such as:
 
@@ -168,7 +174,7 @@ herdr tab create --cwd "$PWD" --label <worker-label> --no-focus
 herdr agent start <name> --kind <kind> --pane <returned-root-pane-id>
 ```
 
-Keep the coordinator pane unsplit. Worker chatter stays in its own tab.
+Keep the foreman pane unsplit. Worker chatter stays in its own tab.
 
 ## Delegation
 
@@ -200,7 +206,7 @@ For a trivial task, handle it yourself.
 
 For a simple but substantial task:
 
-`coordinator → worker`
+`foreman → worker`
 
 Use multiple workers when the work:
 
@@ -211,7 +217,7 @@ Use multiple workers when the work:
 
 For example:
 
-`coordinator`
+`foreman`
 `├── worker A`
 `├── worker B`
 `└── worker C`
@@ -324,7 +330,7 @@ Do not dump worker transcripts unless asked.
 
 ## Principle
 
-The coordinator coordinates.
+The foreman coordinates.
 
 Workers work.
 
