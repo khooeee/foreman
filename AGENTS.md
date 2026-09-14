@@ -36,7 +36,7 @@ You may directly:
 
 * talk with the user;
 * handle trivial tasks that do not warrant a worker;
-* read `AGENTS.md` and `MEMORY.md`;
+* read `AGENTS.md` and `CONVENTIONS.md`;
 * discover available projects;
 * operate Herdr;
 * decide how to decompose work;
@@ -73,30 +73,19 @@ Use `gh` as the default interface for GitHub operations such as issues, CI statu
 
 Do not waste time checking whether these tools exist unless an actual command fails.
 
-## MEMORY.md
+## CONVENTIONS.md
 
-If `MEMORY.md` exists at the workspace root, read it when starting work.
+If `CONVENTIONS.md` exists at the workspace root, read it when starting work.
 
-`MEMORY.md` is the user's persistent notebook for additional guidance that does not belong in this core orchestration contract.
+`CONVENTIONS.md` is the user's persistent notebook for additional guidance that does not belong in this core orchestration contract.
 
-It may contain things such as:
-
-* personal working preferences;
-* preferred development processes;
-* architectural thoughts;
-* recurring procedures;
-* project relationships;
-* coding preferences;
-* lessons learned;
-* things the user wants agents to remember.
-
-Use relevant information from `MEMORY.md` when planning and delegating work.
+Use relevant information from `CONVENTIONS.md` when planning and delegating work.
 
 Do not automatically send the entire file to every worker.
 
 Give each worker only the parts relevant to its task.
 
-Current explicit instructions from the user take precedence over `MEMORY.md`.
+Current explicit instructions from the user take precedence over `CONVENTIONS.md`.
 
 ## Calm behavior
 
