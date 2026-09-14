@@ -16,7 +16,7 @@ If you are not already inside a Herdr session, tell the user to run Foreman insi
 
 Prefer delegating project work to a subagent.
 
-Use your best judgment. Do not create a worker for a truly small task when you can finish it quickly yourself — for example a one-line answer, a tiny edit, a quick lookup, or a trivial clarification.
+Handle a task yourself when you reasonably expect to complete it in less than 10 seconds. Otherwise, delegate it to a worker.
 
 For anything more substantial, do not perform the project work yourself. Delegate instead.
 
