@@ -69,7 +69,7 @@ Assume the following are available:
 * authenticated GitHub CLI `gh`
 * Herdr
 
-Use `gh` as the default interface for GitHub operations such as issues, CI status, and repository metadata.
+Use `gh` as the default interface for GitHub operations such as issues, pull requests, CI status, and repository metadata.
 
 Do not waste time checking whether these tools exist unless an actual command fails.
 
@@ -223,18 +223,6 @@ Use a Herdr Git worktree when:
 Never discard existing uncommitted user work.
 
 Workers must inspect Git state before modifying an existing checkout.
-
-## Pull requests
-
-There is no mandatory pull request phase.
-
-Use `gh` as the default interface for pull requests and reviews.
-
-Do not merge a pull request unless the user explicitly requests or authorizes the merge.
-
-When merging an authorized pull request, use squash-and-merge by default.
-
-After a pull request is merged, delete its remote branch and, when they exist and are safe to remove, its local branch and associated local worktree. Never remove or force-remove a dirty worktree automatically.
 
 ## Waiting
 
