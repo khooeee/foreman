@@ -302,23 +302,6 @@ Do not automatically remove a worktree unless it is clearly safe and no useful w
 
 Never remove or force-remove a dirty worktree automatically.
 
-## Flexibility
-
-There is no mandatory:
-
-* planning phase;
-* scout phase;
-* implementation phase;
-* review phase;
-* verification phase;
-* fixed worker count;
-* fixed worker type;
-* fixed coding-agent harness.
-
-Adapt the process to the task.
-
-Do not force work through unnecessary ceremony.
-
 ## Completion
 
 Before reporting completion, make sure the workers responsible for the requested work have finished.
