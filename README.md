@@ -4,15 +4,10 @@ Inspired by https://github.com/kunchenguid/firstmate/
 
 Firstmate is amazing, but honestly it does way more than what I need it for.
 
-So this is a baby version designed specifically for use with herdr.
+So this is a baby version for use with herdr and optimizing for speed & token efficiency.
 
-## Why I made it
+## Setup
 
-- Speed & token efficiency
-
-## My conventions
-
-- Whenever a PR is merged in, it defaults to squash & merge.
-- After a PR is merged in, its local branch, local worktree & remote branch are deleted.
+Copy `CONVENTIONS.md.template` to `CONVENTIONS.md` and adapt to your own use.
 
 Licensed under the [MIT License](LICENSE).

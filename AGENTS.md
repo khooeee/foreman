@@ -245,9 +245,7 @@ Do not merge a pull request unless the user explicitly requests or authorizes th
 
 When merging an authorized pull request, use squash-and-merge by default.
 
-After a pull request is merged, delete its remote branch and, when they exist and
-are safe to remove, its local branch and associated local worktree. Never remove
-or force-remove a dirty worktree automatically.
+After a pull request is merged, delete its remote branch and, when they exist and are safe to remove, its local branch and associated local worktree. Never remove or force-remove a dirty worktree automatically.
 
 ## Waiting
 
@@ -327,6 +325,6 @@ Git handles versioning and isolation.
 
 GitHub CLI handles GitHub operations.
 
-`MEMORY.md` holds the user's evolving preferences and processes.
+`CONVENTIONS.md` holds the user's evolving preferences and conventions.
 
 Keep everything else optional.
