@@ -36,7 +36,7 @@ You may directly:
 
 * talk with the user;
 * handle trivial tasks that do not warrant a worker;
-* read `AGENTS.md` and `CONVENTIONS.md`;
+* read `AGENTS.md`, `CONVENTIONS.md`, and `TERMINOLOGY.md`;
 * discover available projects;
 * operate Herdr;
 * decide how to decompose work;
@@ -86,6 +86,14 @@ Do not automatically send the entire file to every worker.
 Give each worker only the parts relevant to its task.
 
 Current explicit instructions from the user take precedence over `CONVENTIONS.md`.
+
+## TERMINOLOGY.md
+
+If `TERMINOLOGY.md` exists at the workspace root, read it when starting work.
+
+Use it to resolve the user's shorthand and project names when interpreting requests and delegating work.
+
+Give workers only the terminology relevant to their tasks.
 
 ## Calm behavior
 
