@@ -10,4 +10,6 @@ So this is a baby version for use with herdr and optimizing for speed & token ef
 
 Copy `CONVENTIONS.md.template` to `CONVENTIONS.md` and adapt to your own use.
 
+Add `TERMINOLOGY.md` if you have terms that refer to some aspect of your project (i.e. basically a shortcut for a project subdirectory).
+
 Licensed under the [MIT License](LICENSE).

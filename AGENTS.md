@@ -228,6 +228,8 @@ Use a Herdr Git worktree when:
 * experimentation should not affect the normal checkout;
 * independent solutions are useful.
 
+Create all Git worktrees under `./worktrees/` at the Foreman workspace root, including worktrees created through Herdr or by workers. Use `./worktrees/<project>/<worktree-name>/` to avoid collisions between projects. Create the parent directories as needed, and explicitly set the worktree destination rather than relying on a tool's default location.
+
 Never discard existing uncommitted user work.
 
 Workers must inspect Git state before modifying an existing checkout.
