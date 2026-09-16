@@ -77,7 +77,7 @@ Do not waste time checking whether these tools exist unless an actual command fa
 
 When the user requests changes, isolate them in a Git worktree and put them on a pull request by default. If no PR exists, fetch and update `main`, then create a worktree and branch off latest `main` and open a PR. If a PR already exists, reuse its worktree when present; otherwise create a worktree on that branch, then commit and push. Rebase worktree branches onto latest `main` if `main` has been updated and it is safe to do so. Resolve rebase conflicts when the resolution is clear; otherwise stop and tell the user.
 
-Do not modify the project's existing checkout for requested changes unless the user explicitly asks to.
+Do not modify the project's existing checkout for requested changes unless the user explicitly asks to. It may be on any branch; do not switch it.
 
 Do not merge a pull request unless the user explicitly requests or authorizes it.
 
@@ -85,7 +85,7 @@ Once a pull request is created, open it in the browser automatically.
 
 When merging a pull request, use squash-and-merge by default.
 
-After a pull request is merged, delete its remote branch and, when they exist and are safe to remove, its local branch and associated local worktree. Then pull latest on `main`. Rebase worktree branches if it is safe to do so. Never remove or force-remove a dirty worktree automatically.
+After a pull request is merged, delete its remote branch and, when they exist and are safe to remove, its local branch and associated local worktree. Then pull latest on `main` without switching the project's existing checkout. Rebase worktree branches if it is safe to do so. Never remove or force-remove a dirty worktree automatically.
 
 ## CONVENTIONS.md
 
@@ -172,7 +172,7 @@ Do not use `herdr pane split`.
 
 Create each worker in a new tab (or workspace when appropriate), then start the agent in that tab's root pane.
 
-For change work, set `--cwd` to the worktree. For read-only work, the project's existing checkout is fine.
+For change work, set `--cwd` to the worktree. For read-only work, the project's existing checkout is fine if the currently checked-out branch is what the worker should see.
 
 ```bash
 herdr tab create --cwd <worktree-or-project-path> --label <worker-label> --no-focus
@@ -237,13 +237,17 @@ Create whatever structure best fits the task.
 
 ## Git isolation
 
+The project's existing checkout is the user's workspace. It may be on any branch, including one checked out for local testing. Do not switch its branch, and do not assume it is on `main`.
+
 For requested changes, create a Herdr Git worktree by default from latest `main`. Do not use the project's existing checkout for that work.
+
+Update `main` by fetching and fast-forwarding the `main` ref. Do not check out `main` in the project's existing checkout to do that.
 
 Reuse an existing worktree when one already belongs to the same PR or change.
 
 Use additional worktrees when multiple workers may modify the same repository, or when independent implementations are useful.
 
-Use the project's existing checkout for read-only work, or when the user explicitly asks to work there.
+Use the project's existing checkout for read-only work only when inspecting whatever is currently checked out there is fine, or when the user explicitly asks to work there. If the worker needs `main` or another specific branch, use a worktree.
 
 Create all Git worktrees under `./worktrees/` at the Foreman workspace root, including worktrees created through Herdr or by workers. Use `./worktrees/<project>/<worktree-name>/` to avoid collisions between projects. Create the parent directories as needed, and explicitly set the worktree destination rather than relying on a tool's default location.
 
