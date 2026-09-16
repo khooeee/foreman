@@ -4,7 +4,7 @@ Inspired by https://github.com/kunchenguid/firstmate/
 
 Firstmate is amazing, but honestly it does way more than what I need it for.
 
-So this is a smaller & opinionated version for use with herdr and optimizing for speed & token efficiency.
+So this is a smaller & opinionated version for use with herdr and optimizing for speed & token efficiency.  Any requested code change will open a PR by default.
 
 ## Setup
 

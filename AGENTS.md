@@ -75,13 +75,17 @@ Do not waste time checking whether these tools exist unless an actual command fa
 
 ## Branches & pull requests
 
-Do not push to a remote branch, create a pull request or merge a pull request unless the user explicitly requests or authorizes it.
+When the user requests changes, isolate them in a Git worktree and put them on a pull request by default. If no PR exists, fetch and update `main`, then create a worktree and branch off latest `main` and open a PR. If a PR already exists, reuse its worktree when present; otherwise create a worktree on that branch, then commit and push. Rebase worktree branches onto latest `main` if `main` has been updated and it is safe to do so. Resolve rebase conflicts when the resolution is clear; otherwise stop and tell the user.
+
+Do not modify the project's existing checkout for requested changes unless the user explicitly asks to.
+
+Do not merge a pull request unless the user explicitly requests or authorizes it.
 
 Once a pull request is created, open it in the browser automatically.
 
 When merging a pull request, use squash-and-merge by default.
 
-After a pull request is merged, delete its remote branch and, when they exist and are safe to remove, its local branch and associated local worktree. And then check out the main branch and git pull latest. Never remove or force-remove a dirty worktree automatically.
+After a pull request is merged, delete its remote branch and, when they exist and are safe to remove, its local branch and associated local worktree. Then pull latest on `main`. Rebase worktree branches if it is safe to do so. Never remove or force-remove a dirty worktree automatically.
 
 ## CONVENTIONS.md
 
@@ -166,10 +170,12 @@ When creating a worker terminal or agent, do not split the current window.
 
 Do not use `herdr pane split`.
 
-Create each worker in a new tab (or workspace when appropriate), then start the agent in that tab's root pane:
+Create each worker in a new tab (or workspace when appropriate), then start the agent in that tab's root pane.
+
+For change work, set `--cwd` to the worktree. For read-only work, the project's existing checkout is fine.
 
 ```bash
-herdr tab create --cwd "$PWD" --label <worker-label> --no-focus
+herdr tab create --cwd <worktree-or-project-path> --label <worker-label> --no-focus
 herdr agent start <name> --kind <kind> --pane <returned-root-pane-id>
 ```
 
@@ -186,6 +192,8 @@ Give workers clear objectives and enough context to operate independently.
 A worker should normally know:
 
 * which project it is working on;
+* which worktree or checkout to use;
+* whether a pull request already exists;
 * what it should accomplish;
 * important constraints;
 * whether it may modify code;
@@ -229,20 +237,21 @@ Create whatever structure best fits the task.
 
 ## Git isolation
 
-Use the project's existing checkout when one worker can safely operate there.
+For requested changes, create a Herdr Git worktree by default from latest `main`. Do not use the project's existing checkout for that work.
 
-Use a Herdr Git worktree when:
+Reuse an existing worktree when one already belongs to the same PR or change.
 
-* multiple workers may modify the same repository;
-* implementations should remain isolated;
-* experimentation should not affect the normal checkout;
-* independent solutions are useful.
+Use additional worktrees when multiple workers may modify the same repository, or when independent implementations are useful.
+
+Use the project's existing checkout for read-only work, or when the user explicitly asks to work there.
 
 Create all Git worktrees under `./worktrees/` at the Foreman workspace root, including worktrees created through Herdr or by workers. Use `./worktrees/<project>/<worktree-name>/` to avoid collisions between projects. Create the parent directories as needed, and explicitly set the worktree destination rather than relying on a tool's default location.
 
+Foreman should create the worktree before starting a change worker, then start that worker with its cwd set to the worktree.
+
 Never discard existing uncommitted user work.
 
-Workers must inspect Git state before modifying an existing checkout.
+Workers must inspect Git state before modifying a checkout.
 
 ## Waiting
 
@@ -293,6 +302,8 @@ Prefer closing the worker's whole disposable Herdr tab or workspace rather than 
 
 Closing a worker's terminal does not imply deleting its Git worktree.
 
+Keep a change worktree until its pull request is merged, or until the user asks to drop the work.
+
 Do not automatically remove a worktree unless it is clearly safe and no useful work would be lost.
 
 Never remove or force-remove a dirty worktree automatically.
@@ -305,6 +316,7 @@ Then give the user a concise result containing only what is useful, typically:
 
 * what was accomplished;
 * which project or projects were affected;
+* the pull request, when one was created or updated;
 * anything unresolved;
 * any decision the user needs to make.
 
