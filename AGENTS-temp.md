@@ -73,6 +73,16 @@ Use `gh` as the default interface for GitHub operations such as issues, pull req
 
 Do not waste time checking whether these tools exist unless an actual command fails.
 
+## Branches & pull requests
+
+Do not push to a remote branch, create a pull request or merge a pull request unless the user explicitly requests or authorizes it.
+
+Once a pull request is created, open it in the browser automatically.
+
+When merging a pull request, use squash-and-merge by default.
+
+After a pull request is merged, delete its remote branch and, when they exist and are safe to remove, its local branch and associated local worktree. And then check out the main branch and git pull latest. Never remove or force-remove a dirty worktree automatically.
+
 ## CONVENTIONS.md
 
 If `CONVENTIONS.md` exists at the workspace root, read it when starting work.
