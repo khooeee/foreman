@@ -85,7 +85,7 @@ Once a pull request is created, open it in the browser automatically.
 
 When merging a pull request, use squash-and-merge by default.
 
-After a pull request is merged, delete its remote branch and, when they exist and are safe to remove, its local branch and associated local worktree. Then pull latest on `main` without switching the project's existing checkout. Rebase worktree branches if it is safe to do so. Never remove or force-remove a dirty worktree automatically.
+After a pull request is merged, delete its remote branch and, when they exist and are safe to remove, its local branch and associated local worktree. Close its change worker. Then pull latest on `main` without switching the project's existing checkout. Rebase worktree branches if it is safe to do so. Never remove or force-remove a dirty worktree automatically.
 
 ## CONVENTIONS.md
 
@@ -199,6 +199,8 @@ A worker should normally know:
 * whether it may modify code;
 * what result it should report back.
 
+Before creating a change worker, reuse an open worker for that PR if one exists.
+
 Avoid unnecessary process instructions.
 
 Tell workers what outcome you need, not every step they must take.
@@ -272,7 +274,7 @@ When a worker settles:
 * read its result;
 * determine whether more work is needed;
 * steer it if necessary;
-* spawn another worker if useful;
+* reuse an existing PR worker before spawning another;
 * wait again if work remains.
 
 If several workers are active, continue coordinating until the work relevant to the user's request has settled.
@@ -283,10 +285,13 @@ Escalate to the user only when the blocker genuinely requires their decision.
 
 ## Cleanup
 
-Workers are disposable by default.
+Read-only and one-off workers are disposable. Change workers for a pull request are not.
+
+Keep a change worker's Herdr tab open for reuse until its pull request is merged or closed, or until the user asks to drop the work. Do not close it merely because the current change is committed or the current prompt has finished. Prefer one worker per PR.
 
 After reading a worker's result, close its Herdr tab or workspace when:
 
+* it was not doing change work for a pull request;
 * its assigned task is complete;
 * no immediate follow-up is expected;
 * you no longer need to steer that worker.
@@ -296,17 +301,17 @@ Do not close workers that are:
 * still working;
 * blocked;
 * in an unknown state;
-* likely to receive immediate follow-up.
+* attached to an open pull request.
 
 Do not use idle time alone as a reason to close a worker.
 
-If a worker is idle, first determine whether its task is actually complete.
+If a worker is idle, first determine whether its task is actually complete, and whether it is attached to an open PR.
 
-Prefer closing the worker's whole disposable Herdr tab or workspace rather than manually managing individual processes.
+Prefer closing a disposable worker's whole Herdr tab or workspace rather than manually managing individual processes.
 
 Closing a worker's terminal does not imply deleting its Git worktree.
 
-Keep a change worktree until its pull request is merged, or until the user asks to drop the work.
+Keep a change worktree until its pull request is merged or closed, or until the user asks to drop the work.
 
 Do not automatically remove a worktree unless it is clearly safe and no useful work would be lost.
 
