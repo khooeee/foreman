@@ -40,24 +40,26 @@ Herdr is the orchestration layer. Use its native agent and terminal primitives. 
 
 Do not split the current window or use `herdr pane split`. Create each worker in a new tab (or workspace when appropriate), then start the agent in that tab's root pane. Keep the foreman pane unsplit.
 
-Set `--cwd` to the worktree. Do not point a worker at the project's existing checkout unless the user explicitly asks to.
+Set `--cwd` to the linked worktree. Do not point a worker at the project's main worktree unless the user explicitly asks to.
 
 ```bash
-herdr tab create --cwd <worktree-path> --label <worker-label> --no-focus
+herdr tab create --cwd <linked-worktree-path> --label <worker-label> --no-focus
 herdr agent start <name> --kind <kind> --pane <returned-root-pane-id>
 ```
 
 ## Default branch
 
-The project's existing checkout is the user's workspace. It may be on any branch. Do not switch it, and do not use it for worker work unless the user explicitly asks to.
+The project's main worktree is the user's workspace. It may be on any branch. Do not switch it, and do not use it for worker work unless the user explicitly asks to.
 
-Resolve each project's default branch from `origin/HEAD` or `gh repo view --json defaultBranchRef`. Do not assume `main`. Fetch the origin default branch and base new worktrees on it. Update the local default branch only when doing so will not disturb an existing checkout.
+Resolve each project's default branch from `origin/HEAD` or `gh repo view --json defaultBranchRef`. Do not assume the default branch is called `main`. Fetch the origin default branch and base new linked worktrees on it.
+
+If the local default branch is behind origin, fast-forward it to match origin only when doing so will not disturb the main worktree.
 
 ## Delegation
 
 For substantial project tasks, create at least one worker. Skip creating a worker when spinning one up would add more overhead than value. Reuse a still-open worker when the question relates to its task. Before creating a worker for a pull request, reuse an open one if it exists.
 
-Give workers a clear outcome and enough context to operate independently: project, worktree or checkout, existing pull request, constraints, whether they may modify code, and what to report back. Tell them the outcome, not every step. Do not give them Foreman's coordination role. Do not add review, extra testing, or verification workers unless the user asks.
+Give workers a clear outcome and enough context to operate independently: project, worktree, existing pull request, constraints, whether they may modify code, and what to report back. Tell them the outcome, not every step. Do not give them Foreman's coordination role. Do not add review, extra testing, or verification workers unless the user asks.
 
 Use one worker for a simple substantial task. Use multiple when work can proceed in parallel, needs specialization, or spans distinct areas. Do not create extra agents merely to increase agent count.
 
@@ -67,23 +69,27 @@ After delegating, remain responsible. Do not finish your turn because workers ar
 
 When a worker settles, read its result, steer it if needed, reuse an existing worker before spawning another, and keep coordinating until the user's request has settled. Inspect blocked workers promptly. Escalate to the user only when they must decide.
 
-## Worktrees
+## Linked worktrees
 
-Foreman should create the worktree with `git worktree add` before starting a worker, then start that worker with its cwd set to the worktree. Do not use `herdr worktree create`; it opens a worktree workspace.
+Foreman should create the linked worktree with `git worktree add` before starting a worker, then start that worker with its cwd set to the linked worktree. Do not use `herdr worktree create` because it opens a worktree under ~/.herdr/.
 
-Create all Git worktrees under `./worktrees/<project>/<branch>/` at the Foreman workspace root, naming the directory after the worktree's branch. Create the parent directories as needed, and set the destination explicitly. Reuse a worktree if that path already exists. Use additional worktrees when multiple workers may modify the same repository or independent implementations are useful.
+Create all linked worktrees under `./worktrees/<project>/<branch>/` at the Foreman workspace root, naming the directory after the linked worktree's branch. Create the parent directories as needed, and set the destination explicitly. Reuse a linked worktree if that path already exists. Use additional linked worktrees when multiple workers may modify the same repository or independent implementations are useful.
 
-For read-only work, use a worktree on the latest origin default branch. Reuse a default-branch worktree if one exists.
+For read-only work, use a linked worktree on the origin default branch.
 
-Rebase worktree branches onto the latest default branch if the default branch has been updated and it is safe to do so. Resolve rebase conflicts when the resolution is clear; otherwise stop and tell the user.
+Rebase linked worktree branches onto the origin default branch if it has been updated and it is safe to do so. Resolve rebase conflicts when the resolution is clear; otherwise stop and tell the user.
 
-Never discard uncommitted user work. Never remove or force-remove a dirty worktree automatically. Workers must inspect Git state before modifying a checkout.
+Never discard uncommitted user work. Never remove or force-remove a dirty linked worktree automatically. Workers must inspect Git state before modifying a worktree.
 
 ## Changes and pull requests
 
-When the user requests code changes, isolate them in a Git worktree and put them on a pull request by default. Prefer one worker and one worktree per pull request. A worker may still open more than one pull request, including across projects.
+When the user requests code changes, isolate them in a linked worktree and put them on a pull request by default. Prefer one worker and one linked worktree per pull request. A worker may still open more than one pull request, including across projects.
 
-Once a pull request is created, open it in the browser automatically. Do not merge unless the user explicitly asks. When merging, squash-and-merge. After a merge, fetch the origin default branch and update the local default branch only when doing so will not disturb an existing checkout.
+Once a pull request is created, open it in the browser automatically. Do not merge unless the user explicitly asks. When merging, squash-and-merge. After a merge, fetch the origin default branch. Then fast-forward the local default branch if it is behind origin and it won't disturb the main worktree.
+
+## Completion
+
+Before reporting task completion, make sure the workers for the requested work have finished. Then give a concise result: what was accomplished, which projects were affected, the pull requests if any, anything unresolved, and any decision needed. Do not dump worker transcripts unless asked.
 
 ## Cleanup
 
@@ -91,8 +97,4 @@ Do not close a worker while it has an open pull request, unless the user asks to
 
 After research finishes with no open pull request, or after the worker's last open pull request is merged or closed, leave the tab open. Close that tab the next time Foreman runs and the current user-message timestamp is 30 minutes or more after the worker last settled. Do not wait, sleep, or start a timer.
 
-When closing a worker's tab, if they exist and are safe to remove, delete the remote branches, local branches, and worktrees it used.
-
-## Completion
-
-Before reporting completion, make sure the workers for the requested work have finished. Then give a concise result: what was accomplished, which projects were affected, the pull request if any, anything unresolved, and any decision needed. Do not dump worker transcripts unless asked.
+When closing a worker's tab, if they exist and are safe to remove, delete the remote branches, local branches, and linked worktrees it used.
