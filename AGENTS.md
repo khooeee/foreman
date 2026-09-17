@@ -26,7 +26,7 @@ Assume `git`, authenticated GitHub CLI `gh`, and Herdr are available. Use `gh` f
 
 ## Project Terminology
 
-If `TERMINOLOGY.md` exists at the workspace root, read them when starting work. `TERMINOLOGY.md` resolves project names and shorthand. Give each worker only the parts relevant to its task.
+If `TERMINOLOGY.md` exists at the workspace root, read it when starting work. `TERMINOLOGY.md` resolves project names and shorthand. Give each worker only the parts relevant to its task.
 
 ## Calm behavior
 
@@ -37,8 +37,6 @@ Surface something when you need a decision, a worker is blocked, direction chang
 ## Herdr behavior
 
 Herdr is the orchestration layer. Use its native agent and terminal primitives. Use Herdr's lifecycle state as the source of truth. Do not build a second orchestration system: no heartbeat, polling loop, task database, watcher, supervisor, or lifecycle state machine.
-
-Typical primitives: `herdr workspace create`, `herdr tab create`, `herdr worktree create`, `herdr agent start`, `herdr agent prompt`, `herdr agent get`, `herdr agent wait`, `herdr agent read`.
 
 Do not split the current window or use `herdr pane split`. Create each worker in a new tab (or workspace when appropriate), then start the agent in that tab's root pane. Keep the foreman pane unsplit.
 
@@ -71,9 +69,9 @@ When a worker settles, read its result, steer it if needed, reuse an existing wo
 
 ## Worktrees
 
-Foreman should create the worktree before starting a worker, then start that worker with its cwd set to the worktree.
+Foreman should create the worktree with `git worktree add` before starting a worker, then start that worker with its cwd set to the worktree. Do not use `herdr worktree create`; it opens a worktree workspace.
 
-Create all Git worktrees under `./worktrees/<project>/<worktree-name>/` at the Foreman workspace root. Create the parent directories as needed, and set the destination explicitly. Use additional worktrees when multiple workers may modify the same repository or independent implementations are useful.
+Create all Git worktrees under `./worktrees/<project>/<branch>/` at the Foreman workspace root, naming the directory after the worktree's branch. Create the parent directories as needed, and set the destination explicitly. Reuse a worktree if that path already exists. Use additional worktrees when multiple workers may modify the same repository or independent implementations are useful.
 
 For read-only work, use a worktree on the latest origin default branch. Reuse a default-branch worktree if one exists.
 
@@ -83,19 +81,17 @@ Never discard uncommitted user work. Never remove or force-remove a dirty worktr
 
 ## Changes and pull requests
 
-When the user requests code changes, isolate them in a Git worktree and put them on a pull request by default. Prefer one worker and one worktree per pull request.
+When the user requests code changes, isolate them in a Git worktree and put them on a pull request by default. Prefer one worker and one worktree per pull request. A worker may still open more than one pull request, including across projects.
 
-Once a pull request is created, open it in the browser automatically. Do not merge unless the user explicitly asks. When merging, squash-and-merge.
-
-After a pull request is merged or closed, leave its worker open and close it using rules from the Cleanup section. After a merge, fetch the origin default branch and update the local default branch only when doing so will not disturb an existing checkout. When closing that worker, if they exist and are safe to remove, delete its remote branch, local branch, and worktree.
+Once a pull request is created, open it in the browser automatically. Do not merge unless the user explicitly asks. When merging, squash-and-merge. After a merge, fetch the origin default branch and update the local default branch only when doing so will not disturb an existing checkout.
 
 ## Cleanup
 
-Do not close a worker while it is attached to an open pull request, unless the user asks to drop the work. Do not close a worker that is still working, blocked, or in an unknown state.
+Do not close a worker while it has an open pull request, unless the user asks to drop the work. Do not close a worker that is still working, blocked, or in an unknown state.
 
-After research finishes, or after a pull request is merged or closed, leave the tab open. Close that tab the next time Foreman runs and the current user-message timestamp is 30 minutes or more after the worker last settled. Do not wait, sleep, or start a timer.
+After research finishes with no open pull request, or after the worker's last open pull request is merged or closed, leave the tab open. Close that tab the next time Foreman runs and the current user-message timestamp is 30 minutes or more after the worker last settled. Do not wait, sleep, or start a timer.
 
-Closing a worker's tab implies deleting its worktree.
+When closing a worker's tab, if they exist and are safe to remove, delete the remote branches, local branches, and worktrees it used.
 
 ## Completion
 
