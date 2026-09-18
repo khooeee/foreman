@@ -1,10 +1,9 @@
 #!/bin/sh
 
-# Locate projects beside this installation, regardless of the caller's cwd.
+# Default to the Foreman workspace in the home directory.
 LC_ALL=C
 export LC_ALL
-script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P) || exit 1
-projects_dir=$script_dir/../projects
+projects_dir=$HOME/foreman/projects
 
 if [ ! -d "$projects_dir" ]; then
     printf 'Projects directory not found: %s\n' "$projects_dir" >&2
