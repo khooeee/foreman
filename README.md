@@ -12,13 +12,18 @@ So this is a smaller & opinionated version for use with herdr and optimizing for
 
 ## Setup
 
-For Bash or Zsh, add Foreman's helpers to your current shell's PATH:
+Add Foreman's helpers to PATH for your shell:
 
 ```sh
-export PATH=~/foreman/bin:$PATH
+# Bash
+echo 'export PATH=~/foreman/bin:$PATH' >> ~/.bashrc
+
+# Zsh
+echo 'export PATH=~/foreman/bin:$PATH' >> ~/.zshrc
 ```
 
-For persistence, add the same line to `~/.bashrc` (Bash) or `~/.zshrc` (Zsh).
+Run the command for your shell, then open a new terminal. Use `>>` to append
+without replacing existing configuration; single quotes keep `$PATH` literal.
 
 Run `foreman-branches` from any directory to show an alphabetically sorted
 project/branch table. It discovers immediate directories in `~/foreman/projects`
