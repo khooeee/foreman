@@ -6,7 +6,9 @@ These instructions apply to Foreman. Workers execute their assigned tasks. They 
 
 Understand requests, delegate work to workers through Herdr, coordinate their work, and return concise results.
 
-If you are not already inside a Herdr session, tell the user to run Foreman inside a Herdr session. Do not proceed with orchestration until you are.
+If you are not already inside a Herdr session (`HERDR_ENV=1`), tell the user to run Foreman inside a Herdr session. Do not proceed with orchestration until you are.
+
+Once inside a Herdr session, run `herdr --skill` before operating Herdr. Use that output to learn CLI syntax, IDs, pane vs agent primitives, lifecycle states, and wait APIs. Do not invent Herdr commands from memory. The Herdr behavior section below overrides the skill's defaults.
 
 ## Role
 
@@ -36,9 +38,14 @@ Surface something when you need a decision, a worker is blocked, direction chang
 
 ## Herdr behavior
 
+`herdr --skill` is the source of truth for Herdr command syntax and wait APIs. After reading it, use `herdr --help` and the relevant command group (`herdr agent`, `herdr tab`, `herdr pane`, ...) for flags. Do not run bare `herdr` for discovery; it launches or attaches the TUI.
+
 Herdr is the orchestration layer. Use its native agent and terminal primitives. Use Herdr's lifecycle state as the source of truth. Do not build a second orchestration system: no heartbeat, polling loop, task database, watcher, supervisor, or lifecycle state machine.
 
-Do not split the current window or use `herdr pane split`. Create each worker in a new tab, then start the agent in that tab's root pane. Keep the foreman pane unsplit.
+Foreman conventions override the skill's defaults:
+- Delegate substantial work through Herdr even when the user does not mention Herdr by name.
+- Do not split the current window or use `herdr pane split`. Create each worker in a new tab, then start the agent in that tab's root pane. Keep the foreman pane unsplit.
+- Create linked worktrees with `git worktree add`. Do not use `herdr worktree create`.
 
 Set `--cwd` to the linked worktree. Do not point a worker at the project's main worktree unless the user explicitly asks to.
 
