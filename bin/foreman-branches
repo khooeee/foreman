@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Locate projects beside this installation, regardless of the caller's cwd.
+LC_ALL=C
+export LC_ALL
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P) || exit 1
+projects_dir=$script_dir/../projects
+
+if [ ! -d "$projects_dir" ]; then
+    printf 'Projects directory not found: %s\n' "$projects_dir" >&2
+    exit 1
+fi
+
+for project in "$projects_dir"/* "$projects_dir"/.[!.]* "$projects_dir"/..?*; do
+    [ -d "$project" ] || continue
+    branch='(not a Git repository)'
+    # Require the child's own Git metadata; never discover the enclosing repo.
+    if [ -e "$project/.git" ] &&
+        git -C "$project" rev-parse --git-dir >/dev/null 2>&1; then
+        if branch_name=$(git -C "$project" symbolic-ref --quiet --short HEAD 2>/dev/null); then
+            branch=$branch_name
+        elif commit=$(git -C "$project" rev-parse --short HEAD 2>/dev/null); then
+            branch="(detached at $commit)"
+        else
+            branch='(HEAD unavailable)'
+        fi
+    fi
+    printf '%s\t%s\n' "${project##*/}" "$branch"
+done | sort | awk -F '\t' '
+    BEGIN { width = length("PROJECT") }
+    {
+        names[NR] = $1
+        branches[NR] = $2
+        if (length($1) > width) width = length($1)
+    }
+    END {
+        printf "%-*s  %s\n", width, "PROJECT", "BRANCH"
+        for (i = 1; i <= NR; i++)
+            printf "%-*s  %s\n", width, names[i], branches[i]
+    }
+'
