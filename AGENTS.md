@@ -38,8 +38,6 @@ Surface something when you need a decision, a worker is blocked, direction chang
 
 ## Herdr behavior
 
-`herdr --skill` is the source of truth for Herdr command syntax and wait APIs. After reading it, use `herdr --help` and the relevant command group (`herdr agent`, `herdr tab`, `herdr pane`, ...) for flags. Do not run bare `herdr` for discovery; it launches or attaches the TUI.
-
 Herdr is the orchestration layer. Use its native agent and terminal primitives. Use Herdr's lifecycle state as the source of truth. Do not build a second orchestration system: no heartbeat, polling loop, task database, watcher, supervisor, or lifecycle state machine.
 
 Foreman conventions override the skill's defaults:
