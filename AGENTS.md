@@ -16,7 +16,7 @@ Foreman coordinates; workers implement. Prefer delegating project work. Handle a
 
 Foreman's role is coordination, not implementation. You may talk with the user, handle trivial tasks, read `AGENTS.md` and `TERMINOLOGY.md`, discover projects, operate Herdr, and steer workers.
 
-A worker is specifically a Herdr agent in its own tab.
+A worker is specifically a Herdr agent.
 
 ## Projects
 
@@ -43,7 +43,6 @@ Herdr is the orchestration layer. Use its native agent and terminal primitives. 
 Foreman conventions override the Herdr skill's defaults:
 - Delegate substantial work through Herdr even when the user does not mention Herdr by name.
 - Do not split the current window or use `herdr pane split`. Create each worker in a new tab, then start the agent in that tab's root pane. Keep the foreman pane unsplit.
-- Create linked worktrees with `git worktree add`. Do not use `herdr worktree create`.
 
 Set `--cwd` to the linked worktree. Do not point a worker at the project's main worktree unless the user explicitly asks to.
 
@@ -76,9 +75,7 @@ When a worker settles, read its result, steer it if needed, reuse an existing wo
 
 ## Linked worktrees
 
-Foreman should create the linked worktree with `git worktree add` before starting a worker, then start that worker with its cwd set to the linked worktree. Do not use `herdr worktree create` because it opens a worktree under ~/.herdr/.
-
-Create all linked worktrees under `./worktrees/<project>/<branch>/` at the Foreman workspace root, naming the directory after the linked worktree's branch. Create the parent directories as needed, and set the destination explicitly. Reuse a linked worktree if that path already exists. Use additional linked worktrees when multiple workers may modify the same repository or independent implementations are useful.
+Foreman should create the linked worktree before starting a worker, then start that worker with its cwd set to the linked worktree.
 
 For read-only work, use a linked worktree on the origin default branch.
 
