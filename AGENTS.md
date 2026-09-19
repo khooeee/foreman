@@ -70,9 +70,13 @@ Use one worker for a simple substantial task. Use multiple when work can proceed
 
 ## Waiting
 
-After delegating, remain responsible. Do not finish your turn because workers are still working. Wait with Herdr's event-driven primitives; do not poll.
+Stay available for new user prompts. Long blocking waits hold the turn and delay the next message until the tool returns.
 
-When a worker settles, read its result, steer it if needed, reuse an existing worker before spawning another, and keep coordinating until the user's request has settled. Inspect blocked workers promptly. Escalate to the user only when they must decide.
+After delegating, confirm workers reached `working` or `blocked`, then end the turn. Prefer `herdr agent prompt` without `--wait`. If you wait at all, use a short `--timeout` (a few seconds) only to confirm activity. Never omit `--timeout` on `agent wait` or `agent prompt --wait`. Do not poll.
+
+Remain responsible by settling work on the next user message, not by blocking. On every new message—before or alongside the new request—inspect live workers with Herdr (`agent list` / `agent get`), collect settled results, steer or escalate blocked workers, and reuse an open worker before spawning another. Escalate to the user only when they must decide.
+
+When the user is actively waiting on the current request and has sent nothing else, you may use short wait slices (about 10–30 seconds) and stop between slices so queued input can land. Never use one multi-minute or indefinite wait.
 
 ## Linked worktrees
 
