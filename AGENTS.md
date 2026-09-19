@@ -106,6 +106,12 @@ Do not close a worker while it has an open pull request, unless the user asks to
 
 After research finishes with no open pull request, leave the tab open. Close that tab the next time Foreman runs and the current user-message timestamp is 30 minutes or more after the worker last settled. Do not wait, sleep, or start a timer.
 
+## Code guidelines
+
+My ideal lines of code is under 300 and primarily focused on one idea.  This is so a human engineer can open any file in the repo and have a decent idea what it does within a few seconds.  Extract & refactor to achieve this objective.
+
+Prefer one export per file.
+
 ## Coding Agents
 
 When creating a new Codex coding agent, default model to gpt-6-astra and effort to high unless otherwise specified.
