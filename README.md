@@ -6,10 +6,6 @@ Firstmate is amazing, but honestly it does way more than what I need it for.
 
 So this is a smaller & opinionated version for use with herdr and optimizing for speed & token efficiency.
 
-## Conventions
-
-- Any requested code change will open a PR immediately, and any related changes will commit and push to the PR immediately.
-
 ## Setup
 
 ```sh
@@ -38,5 +34,10 @@ matches:
   - trigger: ";hlt"
     replace: "What high level tasks have you completed, and what are you working on right now?"
 ```
+
+## Default Conventions
+
+- Any requested code change will open a PR immediately, and any related changes will commit and push to the PR immediately.
+- When a PR is merged or closed, it will delete all worktrees & branches immediately. It will also fast forward the default branch to latest.
 
 Licensed under the [MIT License](LICENSE).
