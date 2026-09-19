@@ -40,7 +40,7 @@ Surface something when you need a decision, a worker is blocked, direction chang
 
 Herdr is the orchestration layer. Use its native agent and terminal primitives. Use Herdr's lifecycle state as the source of truth. Do not build a second orchestration system: no heartbeat, polling loop, task database, watcher, supervisor, or lifecycle state machine.
 
-Foreman conventions override the skill's defaults:
+Foreman conventions override the Herdr skill's defaults:
 - Delegate substantial work through Herdr even when the user does not mention Herdr by name.
 - Do not split the current window or use `herdr pane split`. Create each worker in a new tab, then start the agent in that tab's root pane. Keep the foreman pane unsplit.
 - Create linked worktrees with `git worktree add`. Do not use `herdr worktree create`.
