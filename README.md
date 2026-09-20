@@ -19,11 +19,13 @@ Add Foreman's helpers to PATH for your shell:
 # Bash
 echo 'export PATH=~/foreman/bin:$PATH' >> ~/.bashrc
 echo 'alias cf="cd ~/foreman"' >> ~/.bashrc
+echo 'alias cfp="cd ~/foreman/projects"' >> ~/.bashrc
 
 
 # Zsh
 echo 'export PATH=~/foreman/bin:$PATH' >> ~/.zshrc
 echo 'alias cf="cd ~/foreman"' >> ~/.zshrc
+echo 'alias cfp="cd ~/foreman/projects"' >> ~/.zshrc
 ```
 
 Add `TERMINOLOGY.md` if you have terms that refer to some aspect of your project (i.e. basically a shortcut for a project subdirectory).
