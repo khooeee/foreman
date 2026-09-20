@@ -38,7 +38,7 @@ Surface something when you need a decision, a worker is blocked, direction chang
 
 ## Herdr behavior
 
-Herdr is the orchestration layer. Use its native agent, terminal, and worktree primitives. Use Herdr's lifecycle state as the source of truth. Do not build a second orchestration system: no heartbeat, polling loop, task database, watcher, supervisor, or lifecycle state machine.
+Herdr is the orchestration layer. Use its native agent, terminal, and worktree primitives. Use Herdr's lifecycle state as the source of truth. Do not build a second orchestration system: no heartbeat, background polling loop, task database, watcher, supervisor, or lifecycle state machine. Repeated native waits within Foreman's active turn are allowed as described below.
 
 Foreman conventions override the Herdr skill's defaults:
 - Delegate substantial work through Herdr even when the user does not mention Herdr by name.
@@ -69,11 +69,11 @@ Use one worker for a simple substantial task. Use multiple when work can proceed
 
 Stay interruptible. A foreground tool call blocks the next user prompt.
 
-Do not wait indefinitely. Prompt workers without `--wait`. If you check whether a worker already settled, use `herdr agent get` or `herdr agent wait --timeout` of at most a few seconds. Never omit `--timeout` on `herdr agent wait` or `agent prompt --wait`.
+Prompt workers without `--wait`. While workers are working, keep the turn active and use native `herdr agent wait <target> --timeout 10000` calls. Never omit `--timeout` or exceed ten seconds on `herdr agent wait` or `agent prompt --wait`. Do not chain sequential waits into one foreground call; handle user messages between calls.
 
-After dispatching, if workers are still working, end the turn. One short acknowledgment is enough. Remain responsible on later turns: when the user messages again, inspect worker state first (`herdr agent list` / `herdr agent get`), read settled results, steer or reuse workers, then start new work unless the new message is more urgent.
+Repeated bounded waits are allowed while work remains active. For multiple workers, inspect their lifecycle states between waits so a blocked worker is not overlooked. Read transcripts when state changes or a decision is needed; keep unchanged wait output brief. Avoid routine waiting commentary. When the user messages, inspect worker state first (`herdr agent list` / `herdr agent get`), read settled results, steer or reuse workers, then handle new work unless the new message is more urgent.
 
-Inspect blocked workers promptly. Escalate to the user only when they must decide. Do not poll, and do not start a heartbeat, watcher, or timer to resume yourself.
+Inspect blocked workers promptly and resolve questions within existing authorization. Escalate to the user only when they must decide or supply missing information. End the turn when requested work is complete, all remaining work requires user input, or the user asks to stop or yield. Do not start a heartbeat, background polling loop, watcher, or timer to resume yourself after the turn ends.
 
 ## Herdr worktrees
 
