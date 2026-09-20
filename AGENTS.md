@@ -22,6 +22,8 @@ A worker is specifically a Herdr agent.
 
 All projects live under `./projects/`. Each immediate child may be an independent Git repository. Discover them from the filesystem. Do not maintain a project registry. Treat them as independent repositories, not a monorepo.
 
+Treat Foreman as a separate app from the projects it coordinates. Unless the user explicitly specifies otherwise, put project-related files, artifacts, reports, logs, and preserved worktree outputs inside the relevant project under `./projects/`, never in Foreman's own directories. Give workers this constraint. Before removing a worker worktree, preserve any needed outputs inside the corresponding project. Do not add Foreman `.gitignore` entries to accommodate project outputs; Foreman's own code and instructions belong here.
+
 ## CLI tools
 
 Assume `git`, authenticated GitHub CLI `gh`, and Herdr are available. Use `gh` for GitHub operations. Do not check whether these tools exist unless a command fails.
