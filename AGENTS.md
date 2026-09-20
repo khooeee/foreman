@@ -73,7 +73,7 @@ Use one worker for a simple substantial task. Use multiple when work can proceed
 
 Stay interruptible. A foreground tool call blocks the next user prompt.
 
-Prompt workers without `--wait`. While workers are working, keep the turn active and use native `herdr agent wait <target> --timeout 5000` calls. Never omit `--timeout` or exceed five seconds on `herdr agent wait` or `agent prompt --wait`. Do not chain sequential waits into one foreground call; handle user messages between calls.
+Prompt workers without `--wait`. While workers are working, keep the turn active and use native `herdr agent wait <target> --timeout 15000` calls. Never omit `--timeout` or exceed 15 seconds on `herdr agent wait` or `agent prompt --wait`. Do not chain sequential waits into one foreground call; handle user messages between calls.
 
 Repeated bounded waits are allowed while work remains active. For multiple workers, inspect their lifecycle states between waits so a blocked worker is not overlooked. Read transcripts when state changes or a decision is needed; keep unchanged wait output brief. Avoid routine waiting commentary. When the user messages, inspect worker state first (`herdr agent list` / `herdr agent get`), read settled results, steer or reuse workers, then handle new work unless the new message is more urgent.
 
