@@ -55,9 +55,11 @@ herdr agent start <name> --kind <kind> --pane <returned-root-pane-id>
 
 ## Default branch
 
-The project's main worktree is the user's workspace. It may be on any branch. Do not use it for worker work unless the user explicitly asks to. Keep its current branch except when cleaning up that branch after its pull request is merged or closed. Post-merge synchronization follows the rules below.
+The project's main worktree is the user's workspace. It may be on any branch. Do not use it for worker work unless the user explicitly asks to. Keep its current branch unless the user requests a checkout or that branch's pull request is merged or closed. Post-merge synchronization follows the rules below.
 
 Resolve each project's default branch from `origin/HEAD` or `gh repo view --json defaultBranchRef`. Do not assume the default branch is called `main`. Fetch the origin default branch and pass it as `--base` to `herdr worktree create`.
+
+When the user asks to check out a branch or pull request, switch the project's main worktree to that branch and rebase it onto the latest fetched origin default branch as part of the same task. If checking out the default branch itself, fast-forward it instead. Resolve conflicts while preserving the intent of both changes; ask only when the intended resolution is unclear. Coordinate with any worker using the branch before switching or rebasing. Preserve uncommitted work with a recoverable stash and restore it afterward when necessary; never discard it. A checkout request authorizes this local synchronization, but not force-pushing a published branch. Report the resulting branch and any remaining local/remote divergence. Honor an explicit request to check out an exact revision without rebasing.
 
 ## Delegation
 
@@ -82,8 +84,6 @@ Inspect blocked workers promptly and resolve questions within existing authoriza
 Create the worktree with `herdr worktree create` before starting a worker, then start that worker in the returned root pane. Do not create worker checkouts with `git worktree` or place workers with `herdr tab create`.
 
 For read-only work, base the worktree on the origin default branch.
-
-Rebase worktree branches onto the origin default branch if it has been updated and it is safe to do so. Resolve rebase conflicts when the resolution is clear; otherwise stop and tell the user.
 
 Never discard uncommitted user work. Remove worktrees with `herdr worktree remove` and without `--force`. If removal is refused, stop and tell the user. Workers must inspect Git state before modifying a worktree.
 
