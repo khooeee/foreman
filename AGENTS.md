@@ -53,7 +53,7 @@ herdr agent start <name> --kind <kind> --pane <returned-root-pane-id>
 
 ## Default branch
 
-The project's main worktree is the user's workspace. It may be on any branch. Do not use it for worker work unless the user explicitly asks to. Do not switch it, except after a merged pull request whose branch is checked out there.
+The project's main worktree is the user's workspace. It may be on any branch. Do not use it for worker work unless the user explicitly asks to. Keep its current branch except when cleaning up that branch after its pull request is merged or closed. Post-merge synchronization follows the rules below.
 
 Resolve each project's default branch from `origin/HEAD` or `gh repo view --json defaultBranchRef`. Do not assume the default branch is called `main`. Fetch the origin default branch and pass it as `--base` to `herdr worktree create`.
 
@@ -89,7 +89,11 @@ Never discard uncommitted user work. Remove worktrees with `herdr worktree remov
 
 When the user requests code changes, isolate them in a Herdr worktree and put them on a pull request by default. Prefer one worker and one Herdr worktree per pull request. A worker may still open more than one pull request, including across projects.
 
-Once a pull request is created, open it in the browser automatically. Do not merge unless the user explicitly asks. When merging, squash-and-merge. After a pull request is merged or closed, if the main worktree is still on that branch, check out the default branch first so the local branch can be deleted. Then delete the remote and local branch, and remove its Herdr worktree if it exists and is safe to remove. After a merge, fetch the origin default branch and fast-forward the local default branch if it is behind origin and it won't disturb the main worktree. If the worker has no remaining open pull requests, close it as well.
+Once a pull request is created, open it in the browser automatically. Do not merge unless the user explicitly asks. When merging, squash-and-merge.
+
+After a pull request is merged or closed, switch the main worktree to the default branch only if it is still on that pull request's branch. After a merge, fetch the origin default branch and bring the main worktree up to date: fast-forward it when it is on the default branch, or rebase its current branch onto the origin default branch otherwise. Resolve conflicts while preserving the intent of both changes; ask the user only when the intended resolution is unclear. Coordinate with any active worker using the same branch before rebasing. Preserve uncommitted work, using a recoverable stash and restoring it afterward when necessary; never discard it. If the local default branch is not checked out, fast-forward its reference as well when safe. Local synchronization does not authorize force-pushing a published branch.
+
+Then delete the merged or closed pull request's remote and local branch, remove its Herdr worktree if it exists and is safe to remove, and close its worker if it has no remaining open pull requests. If synchronization or cleanup cannot be completed safely, report what remains and why.
 
 ## Completion
 
