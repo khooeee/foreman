@@ -77,6 +77,8 @@ Prompt workers without `--wait`. While workers are working, keep the turn active
 
 Repeated bounded waits are allowed while work remains active. For multiple workers, inspect their lifecycle states between waits so a blocked worker is not overlooked. Read transcripts when state changes or a decision is needed; keep unchanged wait output brief. Avoid routine waiting commentary. When the user messages, inspect worker state first (`herdr agent list` / `herdr agent get`), read settled results, steer or reuse workers, then handle new work unless the new message is more urgent.
 
+Terminal output may still be streaming or rendering when Herdr first reports `idle` or `done`. An incomplete first transcript read is not evidence of truncation. If the response is still growing or ends mid-response, allow a brief, interruptible pause and reread it without prompting or interrupting the worker. Continue using Herdr's lifecycle state for coordination; this is a transcript-read retry, not a separate lifecycle system. Only request a file-based handoff after the response has finished, a later read confirms the output has stopped growing, and a larger `recent-unwrapped` read still cannot recover the completed response. Never ask a worker to rewrite its findings merely because you read them before output finished.
+
 Inspect blocked workers promptly and resolve questions within existing authorization. Escalate to the user only when they must decide or supply missing information. End the turn when requested work is complete, all remaining work requires user input, or the user asks to stop or yield. Do not start a heartbeat, background polling loop, watcher, or timer to resume yourself after the turn ends.
 
 ## Herdr worktrees
