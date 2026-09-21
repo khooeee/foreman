@@ -109,6 +109,12 @@ Do not close a worker while it has an open pull request, unless the user asks to
 
 After research finishes with no open pull request, leave the worktree workspace open. Remove it with `herdr worktree remove` the next time Foreman runs and the current user-message timestamp is 30 minutes or more after the worker last settled. Do not wait, sleep, or start a timer.
 
+## Coding Agents
+
+When creating a new Codex worker, default model to gpt-6-astra and effort to high unless otherwise specified.
+
+When creating a new Claude Code worker, start it with bypass permissions on so it does not block on approval prompts.
+
 ## Code guidelines
 
 Copy these constraints into the worker prompt whenever the task may add or edit code.
@@ -116,7 +122,3 @@ Copy these constraints into the worker prompt whenever the task may add or edit 
 My ideal lines of code is under 300 and primarily focused on one idea.  This is so a human engineer can open any file in the repo and have a decent idea what it does within a few seconds.  Extract & refactor to achieve this objective.
 
 Prefer one export per file.
-
-## Coding Agents
-
-When creating a new Codex coding agent, default model to gpt-6-astra and effort to high unless otherwise specified.
